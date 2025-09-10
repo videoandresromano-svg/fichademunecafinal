@@ -1,0 +1,6 @@
+{
+  "name": "Ficha de Muñeca ",
+  "description": "A web application for collecting clinical data on wrist joint pathologies and generating a preliminary summary using AI.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

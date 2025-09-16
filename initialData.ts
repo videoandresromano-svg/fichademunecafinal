@@ -1,9 +1,16 @@
-import { FiliatoriosData, AnamnesisData, PhysicalExamData, ScalesData, RadiologyData, ImpactData, PRWEData, DASHData, ClinicalData } from './types';
+import { FiliatoriosData, AnamnesisData, PhysicalExamData, ScalesData, RadiologyData, ImpactData, PRWEData, DASHData, ClinicalData, CRPSData } from './types';
 
 export const initialFiliatorios: FiliatoriosData = { nombre: '', apellido: '', fechaNacimiento: '', edad: '', nacionalidad: '', estadoCivil: '', dni: '', obraSocial: '', domicilio: '', localidad: '', partido: '', telefono: '', ocupacion: '', actividadesActuales: '', deportesAnteriores: '', deportesActuales: '' };
 // Fix: Added missing 'medicoTratante' property to satisfy the AnamnesisData type.
 export const initialAnamnesis: AnamnesisData = { diagnosticoMedico: '', medicoTratante: '', evaluacionKinesica: '', medicoDerivador: '', fechaDerivacion: '', kinesiologo: '', fechaFractura: '', causaFractura: '', fechaAtencionMedica: '', fechaAtencionKinesica: '', lugarPrimeraAtencion: '', rx: '', traccion: '', qx: '', diasInternacion: '', osteosintesis1Tipo: '', osteosintesis1Periodo: '', inmovilizacion: '', inmovilizacion1Tipo: '', inmovilizacion1Periodo: '', osteosintesis2Tipo: '', osteosintesis2Periodo: '', inmovilizacion2Tipo: '', inmovilizacion2Periodo: '', dominancia: '', antecedentesClinicoQuirurgicos: '', medicacionDolor: '', medicacionExtra: '', menopausia: '', osteopeniaOsteoporosis: '', dmo: '', ultimaDmo: '', caidasFrecuentes: '', caidas6meses: '', tabaquismo: '', alcoholismo: '', barbituricos: '', neoplasias: '', fxHombro: '', infecciones: '', enfSNC: '', altVascular: '', diabetes: '', dsr: '', tiroidismo: '', hiperlipidemia: '', dupuytren: '', manosTranspiran: '' };
 export const initialGoniometriaValue = { derecha: '', izquierda: '' };
+export const initialCRPSData: CRPSData = {
+    dolorAlteracionesSensitivas: { dolorDesproporcionado: false, alodinia: false, hiperalgesia: false, parestesiasDisestesias: false },
+    alteracionesAutonomicasTroficas: { cambiosVasomotores: false, cambiosSudomotores: false, edemaPersistente: false, cambiosTroficosPiel: false, osteopeniaLocalizada: false },
+    alteracionesMotorasFuncionales: { rigidezArticular: false, debilidadMuscular: false, tembloresDistonia: false, limitacionFuncionalProgresiva: false },
+    factoresPersonalidad: { ansiedadHipervigilancia: false, rasgosDepresivos: false, catastrofizacionDolor: false, perfeccionismoAutoexigencia: false, afrontamientoPasivo: false, estresPsicosocialCronico: false }
+};
+
 export const initialPhysicalExam: PhysicalExamData = { 
     cftLesion: {
         dolorLocalizacion: { ladoCubital: false, foveaCubital: false, dorsal: false, palmar: false },
@@ -28,13 +35,7 @@ export const initialPhysicalExam: PhysicalExamData = {
         romPasivoLimitado: '',
         hallazgosTejidoBlando: '',
         testCompresionRadiocarpiana: '',
-        signosCRPS: {
-            manosTranspiran: false,
-            tiroidismo: false,
-            dupuytren: false,
-            hiperlipidemia: false,
-            altVascular: false,
-        },
+        evaluacionCRPS: initialCRPSData,
     },
     actitudMiembroSuperior: { hombro: '', codoAntebrazo: '', muneca: '', mano: '' }, 
     pruebasFracturaEscafoides: { dolorSupinacionResistencia: '', supinacionLimitada: '', dolorDesviacionCubital: '', dolorTabaqueraAnatomica: '' }, 

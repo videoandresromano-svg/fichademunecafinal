@@ -73,6 +73,37 @@ export interface GoniometriaValue {
     izquierda: string;
 }
 
+export interface CRPSData {
+    dolorAlteracionesSensitivas: {
+        dolorDesproporcionado: boolean;
+        alodinia: boolean;
+        hiperalgesia: boolean;
+        parestesiasDisestesias: boolean;
+    };
+    alteracionesAutonomicasTroficas: {
+        cambiosVasomotores: boolean;
+        cambiosSudomotores: boolean;
+        edemaPersistente: boolean;
+        cambiosTroficosPiel: boolean;
+        osteopeniaLocalizada: boolean;
+    };
+    alteracionesMotorasFuncionales: {
+        rigidezArticular: boolean;
+        debilidadMuscular: boolean;
+        tembloresDistonia: boolean;
+        limitacionFuncionalProgresiva: boolean;
+    };
+    factoresPersonalidad: {
+        ansiedadHipervigilancia: boolean;
+        rasgosDepresivos: boolean;
+        catastrofizacionDolor: boolean;
+        perfeccionismoAutoexigencia: boolean;
+        afrontamientoPasivo: boolean;
+        estresPsicosocialCronico: boolean;
+    };
+}
+
+
 export interface PhysicalExamData {
     cftLesion: {
         dolorLocalizacion: {
@@ -102,13 +133,7 @@ export interface PhysicalExamData {
         romPasivoLimitado: '' | 'si' | 'no';
         hallazgosTejidoBlando: string;
         testCompresionRadiocarpiana: '' | 'positivo' | 'negativo';
-        signosCRPS: {
-            manosTranspiran: boolean;
-            tiroidismo: boolean;
-            dupuytren: boolean;
-            hiperlipidemia: boolean;
-            altVascular: boolean;
-        };
+        evaluacionCRPS: CRPSData;
     };
     actitudMiembroSuperior: {
         hombro: string;

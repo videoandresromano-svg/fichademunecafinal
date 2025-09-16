@@ -25,10 +25,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
     useEffect(() => {
         const initChat = () => {
             try {
-                if (!import.meta.env.VITE_GEMINI_API_KEY) {
+                if (!import.env.VITE_GEMINI_API_KEY) {
                     throw new Error("API key not found.");
                 }
-                const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+                const ai = new GoogleGenAI({ apiKey: import.env.VITE_GEMINI_API_KEY });
                 chatRef.current = ai.chats.create({
                     model: 'gemini-2.5-flash',
                     config: {

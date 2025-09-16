@@ -329,10 +329,10 @@ Genera una respuesta estructurada con los siguientes apartados:
 
 export const generateAISummary = async (data: ClinicalData): Promise<string> => {
     try {
-        if (!import.meta.env.VITE_GEMINI_API_KEY) {
+        if (!import.env.VITE_GEMINI_API_KEY) {
             throw new Error("API key not found.");
         }
-        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: import.env.VITE_GEMINI_API_KEY });
         const prompt = formatDataForPrompt(data);
 
         const response = await ai.models.generateContent({
@@ -368,14 +368,14 @@ export const generateSummaryForSavedRecord = async (record: ClinicalRecord, pati
 
 export const interpretRadiograph = async (studies: StudyImage[]): Promise<string> => {
     try {
-        if (!import.meta.env.VITE_GEMINI_API_KEY) {
+        if (!import.env.VITE_GEMINI_API_KEY) {
             throw new Error("API key not found.");
         }
         if (!studies || studies.length === 0) {
             return "Error: No se proporcionaron imágenes para interpretar.";
         }
 
-        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: import.env.VITE_GEMINI_API_KEY });
         
         const imageParts = studies.map(study => {
             const base64Data = study.base64.split(',')[1];
@@ -545,9 +545,9 @@ const formatDataForCIFPrompt = (record: ClinicalRecord, patient: Patient): strin
 
 export const generateCIFProfile = async (record: ClinicalRecord, patient: Patient): Promise<CIFProfile | null> => {
     try {
-        if (!import.meta.env.VITE_GEMINI_API_KEY) throw new Error("API key not found.");
+        if (!import.env.VITE_GEMINI_API_KEY) throw new Error("API key not found.");
         
-        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: import.env.VITE_GEMINI_API_KEY });
 
         const prompt = `
 Actúa como un asistente clínico experto en Kinesiología y en la Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF).
@@ -697,9 +697,9 @@ const formatDataForComparisonPrompt = (record: ClinicalRecord, patient: Patient)
 
 export const generateHypothesisComparison = async (record: ClinicalRecord, patient: Patient, professionalHypothesis: string): Promise<HypothesisComparison | null> => {
      try {
-        if (!import.meta.env.VITE_GEMINI_API_KEY) throw new Error("API key not found.");
+        if (!import.env.VITE_GEMINI_API_KEY) throw new Error("API key not found.");
         
-        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: import.env.VITE_GEMINI_API_KEY });
 
         const prompt = `
 Actúa como un asistente experto en razonamiento clínico para kinesiología, especializado en patologías de muñeca.
@@ -804,14 +804,14 @@ const formatDataForEvolutionPrompt = (patient: Patient): string => {
 };
 
 export const generateEvolutionSummary = async (patient: Patient): Promise<string> => {
-    if (!import.meta.env.VITE_GEMINI_API_KEY) {
+    if (!import.env.VITE_GEMINI_API_KEY) {
         throw new Error("API key not found.");
     }
     if (!patient.clinicalRecords || patient.clinicalRecords.length < 2) {
         return "Se necesitan al menos dos registros clínicos para generar un resumen de evolución.";
     }
 
-    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.env.VITE_GEMINI_API_KEY });
     const formattedData = formatDataForEvolutionPrompt(patient);
 
     const prompt = `

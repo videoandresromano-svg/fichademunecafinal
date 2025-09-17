@@ -431,7 +431,7 @@ const PatientDetailPage: React.FC<PatientDetailPageProps> = ({ patientId, onNavi
         }
 
         const uploadFile = async (accessToken: string) => {
-            setIsSavingToDrive(true); // Mover esto aquí para que el estado de carga sea más preciso
+            setIsSavingToDrive(true);
             const currentPatient = patientRef.current;
 
             if (!currentPatient) {
@@ -445,32 +445,36 @@ const PatientDetailPage: React.FC<PatientDetailPageProps> = ({ patientId, onNavi
                 const fileContent = JSON.stringify(currentPatient, null, 2);
                 const fileMetadata = {
                     name: fileName,
-                    // Opcional: si quieres guardarlo en una carpeta específica, necesitas su ID
-                    // parents: ['ID_DE_LA_CARPETA'] 
+                    mimeType: 'application/json',
                 };
 
-                const form = new FormData();
-                form.append(
-                    'metadata', 
-                    new Blob([JSON.stringify(fileMetadata)], { type: 'application/json' })
-                );
-                form.append(
-                    'file', 
-                    new Blob([fileContent], { type: 'application/json' })
-                );
+                // --- CAMBIO CLAVE: CONSTRUCCIÓN DEL CUERPO MULTIPART MANUALMENTE ---
+                const boundary = '-------314159265358979323846';
+                const delimiter = `\r\n--${boundary}\r\n`;
+                const close_delim = `\r\n--${boundary}--`;
+
+                let multipartRequestBody =
+                    delimiter +
+                    'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+                    JSON.stringify(fileMetadata) +
+                    delimiter +
+                    'Content-Type: application/json\r\n\r\n' +
+                    fileContent +
+                    close_delim;
+                
+                // --- FIN DEL CAMBIO CLAVE ---
 
                 const response = await fetch('https://upload.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
                     method: 'POST',
-                    // Simplificación: Pasamos un objeto plano. Dejamos que el navegador
-                    // gestione el 'Content-Type' para FormData, lo cual es crucial.
                     headers: {
                         'Authorization': 'Bearer ' + accessToken,
+                        // --- AÑADIMOS ESTA CABECERA EXPLÍCITAMENTE ---
+                        'Content-Type': `multipart/related; boundary=${boundary}`
                     },
-                    body: form
+                    body: multipartRequestBody // Usamos el cuerpo que construimos manualmente
                 });
 
                 if (!response.ok) {
-                    // Intentamos leer el error específico de la API de Google
                     const errorData = await response.json();
                     console.error('API Error Response:', errorData);
                     throw new Error(errorData.error.message || `Error del servidor: ${response.statusText}`);
@@ -482,7 +486,7 @@ const PatientDetailPage: React.FC<PatientDetailPageProps> = ({ patientId, onNavi
 
             } catch (uploadError: any) {
                 console.error("Google Drive Upload Error:", uploadError);
-                const errorMessage = uploadError.message || 'No se pudo guardar el archivo. Revisa la consola para más detalles.';
+                const errorMessage = uploadError.message || 'No se pudo guardar el archivo.';
                 setDriveSaveMessage(`Error de subida: ${errorMessage}`);
             } finally {
                 setIsSavingToDrive(false);

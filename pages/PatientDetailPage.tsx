@@ -431,7 +431,9 @@ const PatientDetailPage: React.FC<PatientDetailPageProps> = ({ patientId, onNavi
         }
 
         const uploadFile = async (accessToken: string) => {
+            setIsSavingToDrive(true); // Mover esto aquí para que el estado de carga sea más preciso
             const currentPatient = patientRef.current;
+
             if (!currentPatient) {
                 setDriveSaveMessage("Error: No se encontraron datos del paciente para guardar.");
                 setIsSavingToDrive(false);
@@ -441,35 +443,51 @@ const PatientDetailPage: React.FC<PatientDetailPageProps> = ({ patientId, onNavi
             try {
                 const fileName = `Ficha_Paciente_${currentPatient.filiatorios.apellido}_${currentPatient.filiatorios.dni}.json`;
                 const fileContent = JSON.stringify(currentPatient, null, 2);
-                const fileMetadata = { name: fileName, parents: ['root'] };
-                
+                const fileMetadata = {
+                    name: fileName,
+                    // Opcional: si quieres guardarlo en una carpeta específica, necesitas su ID
+                    // parents: ['ID_DE_LA_CARPETA'] 
+                };
+
                 const form = new FormData();
-                form.append('metadata', new Blob([JSON.stringify(fileMetadata)], { type: 'application/json' }));
-                form.append('file', new Blob([fileContent], { type: 'application/json' }));
-                
+                form.append(
+                    'metadata', 
+                    new Blob([JSON.stringify(fileMetadata)], { type: 'application/json' })
+                );
+                form.append(
+                    'file', 
+                    new Blob([fileContent], { type: 'application/json' })
+                );
+
                 const response = await fetch('https://upload.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
                     method: 'POST',
-                    headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                    // Simplificación: Pasamos un objeto plano. Dejamos que el navegador
+                    // gestione el 'Content-Type' para FormData, lo cual es crucial.
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                    },
                     body: form
                 });
-                
+
                 if (!response.ok) {
+                    // Intentamos leer el error específico de la API de Google
                     const errorData = await response.json();
-                    throw new Error(errorData.error.message || 'Error al subir el archivo.');
+                    console.error('API Error Response:', errorData);
+                    throw new Error(errorData.error.message || `Error del servidor: ${response.statusText}`);
                 }
                 
-                await response.json();
-                setDriveSaveMessage('¡Guardado en Google Drive con éxito!');
+                const result = await response.json();
+                console.log('File uploaded successfully:', result);
+                setDriveSaveMessage('¡Ficha guardada en Google Drive con éxito!');
 
             } catch (uploadError: any) {
                 console.error("Google Drive Upload Error:", uploadError);
-                const errorMessage = uploadError.message || 'No se pudo guardar.';
+                const errorMessage = uploadError.message || 'No se pudo guardar el archivo. Revisa la consola para más detalles.';
                 setDriveSaveMessage(`Error de subida: ${errorMessage}`);
             } finally {
                 setIsSavingToDrive(false);
             }
         };
-
         try {
             const client = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID,

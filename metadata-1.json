@@ -1,0 +1,6 @@
+{
+  "name": "Ficha muñeca original",
+  "description": "Una aplicación web para recolectar datos de una ficha clínica sobre patologías de la articulación de la muñeca y generar un resumen preliminar utilizando IA.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
